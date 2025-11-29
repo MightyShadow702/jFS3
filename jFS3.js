@@ -466,8 +466,8 @@ class jFS3
   }
   addTX(func, interval=undefined, frame_size=undefined)
   {
-      if (!frame_size) frame_size = 138000;
-      if (!interval) interval=10000;
+      if (!frame_size) frame_size = 128000;
+      if (!interval) interval=500;
       if (this._tx) clearInterval(this._tx);
       this._tx = setInterval(() => {
           const frame = [];
