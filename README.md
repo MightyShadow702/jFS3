@@ -1,4 +1,13 @@
 # jFS3
+![License: LGPL v3](https://img.shields.io/badge/License-LGPLv3-blue.svg)
+![Size](https://img.shields.io/badge/size-~17kB-brightgreen)
+![Language: JavaScript](https://img.shields.io/badge/language-JavaScript-yellow)
+![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
+![Platform](https://img.shields.io/badge/platform-browser-blue)
+![CoW](https://img.shields.io/badge/Copy--on--Write-yes-blue)
+![SHA256](https://img.shields.io/badge/Content--addressed-SHA--256-blue)
+![Deduplication](https://img.shields.io/badge/block--dedup-yes-green)
+
 **A pure-JS, content-addressed, copy-on-write virtual filesystem for the browser — featuring deduplication, filesystem universes, events, and optional asynchronous sync.**
 
 jFS3 is a modern, lightweight filesystem engine designed for browser environments and offline-first applications.  
@@ -119,42 +128,42 @@ Uses base64-encoded JSON frames for block + inode replication.
 ## 🧪 API Overview
 
 ### Directories
-- fs.mkdir(path)
-- fs.rmdir(path)
-- fs.listdir(path)
-- fs.chdir(path)
-- fs.getcwd()
+- `fs.mkdir(path)`
+- `fs.rmdir(path)`
+- `fs.listdir(path)`
+- `fs.chdir(path)`
+- `fs.getcwd()`
 
 ### Files
-- fs.writeFile(path, data, blocksize?)
-- fs.readFile(path)
-- fs.rm(path)
+- `fs.writeFile(path, data, blocksize?)`
+- `fs.readFile(path)`
+- `fs.rm(path)`
 
 ### Files & Directories
-- fs.copy(src, dest)
-- fs.move(src, dest)
+- `fs.copy(src, dest)`
+- `fs.move(src, dest)`
 
 ### Paths
-- fs.abspath(path)
-- fs.relpath(path, target?)
-- fs.join(root, path)
-- fs.split(path)
-- fs.splitext(path)
+- `fs.abspath(path)`
+- `fs.relpath(path, target?)`
+- `fs.join(root, path)`
+- `fs.split(path)`
+- `fs.splitext(path)`
 
 ### Metadata
-- fs.metainfo(path)
+- `fs.metainfo(path)`
 
 ### Universes
-- fs.transfer(src, dest)
-- fs.deleteTransfer(path)
+- `fs.transfer(src, dest)`
+- `fs.deleteTransfer(path)`
 
 ### Events
-- fs.on(event, handler)
-- fs.off(event, handler)
+- `fs.on(event, handler)`
+- `fs.off(event, handler)`
 
 ### Sync
-- fs.addTX(sendFunction, interval, frameSize)
-- fs.pushRX(frame)
+- `fs.addTX(sendFunction, interval, frameSize)`
+- `fs.pushRX(frame)`
 
 ---
 
