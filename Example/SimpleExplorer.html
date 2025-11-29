@@ -117,7 +117,7 @@
     // updates the path entry to the new path
     fs.on("change-path", (path) => document.getElementById("path").value = path);
     // if current folder gets deleted, go one folder up
-    fs.on("delte-dir", (path) => {
+    fs.on("delete-dir", (path) => {
       if (path === fs.getcwd())
       {
         fs.chdir("..");
