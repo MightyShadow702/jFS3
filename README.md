@@ -15,7 +15,7 @@ All file data is chunked, hashed, and stored by content.
 All modifications create new blocks while preserving old ones.
 
 ### 🔹 Atomic block-level deduplication
-Identical blocks across all files, directories, universes, and synced peers are stored only once.
+Identical blocks across all files, directories, universes are stored only once.
 
 ### 🔹 Filesystem Universes (advanced snapshots)
 Universes are isolated copies of filesystem subtrees.
@@ -69,7 +69,7 @@ import jFS3 from "./jFS3.js";
 ## 🚀 Quick Start
 
 ```js
-const fs = new jFS3(8192, false); // ( default_blocksize: 8196, sync: false )
+const fs = new jFS3(8192, false); // (default_blocksize: 8196, sync: false)
 
 // Create directories
 fs.mkdir("/docs");
@@ -102,7 +102,8 @@ JSON-based inode structures containing type, blocks, timestamps, etc.
 Immutable, hashed blocks stored under a "blocks" store.
 
 ### CoW + Deduplication
-Writes produce new blocks; old ones remain until garbage collected.
+When writing data, jFS3 only stores new blocks if the content is unique.
+Existing blocks are reused through hash-based deduplication.
 
 ### Garbage Collection
 Runs every 30 seconds to delete unreferenced blocks.
@@ -135,7 +136,7 @@ Uses base64-encoded JSON frames for block + inode replication.
 
 ### Paths
 - fs.abspath(path)
-- fs.relpath(path, target)
+- fs.relpath(path, target?)
 - fs.join(root, path)
 - fs.split(path)
 - fs.splitext(path)
