@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <header>
+    <title>SimpleExplorer (Example)</title>
+    <script src="../jFS3.js"></script>
+    <script>
+    // init Filesystem
+    const fs = new jFS3();
+
+    // helper to download-file from path
+    function downloadFile(name) {
+      // returns directly a file-object
+      fs.readFile(name).then((file) => {
+        const url = URL.createObjectURL(file);
+        const a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = url;
+        document.body.removeChild(a);
+        a.download = file.name;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    //update file-list
+    function updateList()
+    {
+      const content = document.getElementById("content");
+      content.innerHTML = "";
+
+      // check if current-path is not root
+      if (fs.getcwd() != "/")
+      {
+        // if not root, then show ".." to go upper in FS.
+        const entry = document.createElement("div");
+        entry.id = "upper";
+        entry.innerText = "..";
+        entry.onclick = () => fs.chdir("..");
+        content.appendChild(entry);
+      }
+
+      //iterate all elements of the current working directory
+      for (const name of fs.listdir())
+      {
+        // create entry containing delete button and name
+        const entry = document.createElement("div");
+        // create delete button
+        const delete_button = document.createElement("button");
+        delete_button.innerText = "X";
+        delete_button.onclick = () => {
+          // check type of entry and choose delete methode
+          if (fs.isfile(name)) fs.rm(name);
+          else if (fs.isdir(name)) fs.rmdir(name);
+        }
+        entry.appendChild(delete_button);
+
+        // read meta-information of file.
+        const meta = fs.metainfo(name);
+
+        // create title
+        const title = document.createElement("p");
+
+        // create localtime from create date of meta-information.
+        const cdate = new Date(meta.cdate).toLocaleString();
+        // create localtime from modify date of meta-information.
+        const mdate = new Date(meta.mdate).toLocaleString();
+
+        // checks if current element is a dir
+        if (fs.isdir(name))
+        {
+          // set title to folder name with create and modify date
+          title.innerText = name + " <dir> [C: "+ cdate + ", M: "+mdate+"]";
+          // change path to this dir if clicked
+          title.onclick = () => fs.chdir(name);
+        }
+        // checks if current element is a file
+        if (fs.isfile(name))
+        {
+          // set title to file name with file-size, create and modify date
+          title.innerText = name + " ( " + meta.size + "B ) [C: "+ cdate + ", M: "+mdate+"]";
+          // download this file if clicked
+          title.onclick = () => downloadFile(name);
+        }
+        entry.appendChild(title);
+        content.appendChild(entry);
+      }
+      // update block count in footer
+      fs.blocks.keys().then(
+        (blocks) => document.getElementById("block_count").innerText = "Blocks: " + blocks.length
+      );
+      // update inode count in footer
+      document.getElementById("inode_count").innerText = "Inodes: " + fs.inodes.keys().length;
+    }
+
+    // Add file from file picker, write it directly to the FS.
+    function addFile()
+    {
+      for (const file of document.getElementById("new_file").files)
+      {
+        // write file-object directly to FS.
+        fs.writeFile(fs.split(file.name)[1], file);
+      }
+    }
+    // create new folder
+    function newFolder()
+    {
+      //creates new folder, with fallback (default) "new folder" as name
+      fs.mkdir(prompt("New folder") || "new folder");
+    }
+    // Register events to update the file list on FS changes.
+    for (const event of ["change-path", "create-file", "change-file", "delete-file", "create-dir", "delete-dir"])
+    {
+      // if event gets triggered updates the file list.
+      fs.on(event, (path) => updateList());
+    }
+
+    // updates the path entry to the new path
+    fs.on("change-path", (path) => document.getElementById("path").value = path);
+    // if current folder gets deleted, go one folder up
+    fs.on("delte-dir", (path) => {
+      if (path === fs.getcwd())
+      {
+        fs.chdir("..");
+      }
+    });
+
+    //init UI
+    function onload()
+    {
+      updateList();
+      document.getElementById("path").value = fs.getcwd();
+    }
+    </script>
+
+    <style>
+    * {
+      margin: 0px;
+      padding: 0px;
+    }
+
+    #path {
+      background-color: #f2f2f2;
+      width: 100%;
+      height: 50px;
+      font-size: 25px;
+      padding-left: 5px;
+    }
+    #path:hover {
+      background-color: #dbdbdb;
+    }
+
+    #menu {
+      display: flex;
+      background-color: #696969;
+      height: 50px;
+    }
+
+    #menu > * {
+      background-color: #696969;
+      height: 100%;
+      color: white;
+      border: 0px;
+      margin-right: 5px;
+    }
+    #menu > button:hover {
+      background-color: #525252;
+      cursor: pointer;
+    }
+
+    #content {
+      position: fixed;
+      background-color: #dbdbdb;
+      top:100px;
+      bottom: 25px;
+      left: 0px;
+      right: 0px;
+      overflow-y: auto;
+    }
+    #content > div {
+      display: flex;
+      width: calc(100% - 10px);
+      min-height: 50px;
+      margin: 5px;
+      background-color: #dbdbdb;
+      font-size: 25px;
+    }
+    #content > div:hover {
+      background-color: #c4c4c4;
+    }
+    #content > div p {
+      font-size: 25px;
+      width: calc(100% - 50px);
+      height: 100%;
+      line-height: 50px;
+      cursor: default;
+    }
+    #content > div button {
+      width: 40px;
+      height: 40px;
+      color: white;
+      background-color: #d62a2a;
+      border-radius: 15px;
+      border: 0px;
+      margin: 5px;
+    }
+    #content > div button:hover {
+      background-color: #ec1414;
+      cursor: pointer;
+    }
+    #footer {
+      position: fixed;
+      height: 25px;
+      bottom: 0px;
+      left:0px;
+      right: 0px;
+    }
+
+    #footer > * {
+      display: inline;
+      margin-left: 5px;
+    }
+    </style>
+  </header>
+  <body onload="onload()">
+    <input id="path" onchange="fs.chdir(this.value)"></input>
+    <div id="menu">
+      <button onclick="newFolder()">New folder</button>
+      <input type="file" id="new_file" onchange="addFile()" multiple/>
+    </div>
+    <div id="content"></div>
+    <div id="footer">
+      <p id="block_count">Blocks: 0</p>
+      <p id="inode_count">Inodes: 0</p>
+    </div>
+  </body>
+</html>
