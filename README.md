@@ -161,7 +161,7 @@ Uses base64-encoded JSON frames for block + inode replication.
 - `fs.on(event, handler)`
 - `fs.off(event, handler)`
 
-### Sync
+### (Optional) Sync
 - `fs.addTX(sendFunction, interval, frameSize)`
 - `fs.pushRX(frame)`
 
