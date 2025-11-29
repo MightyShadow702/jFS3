@@ -7,8 +7,9 @@
 ![CoW](https://img.shields.io/badge/Copy--on--Write-yes-blue)
 ![SHA256](https://img.shields.io/badge/Content--addressed-SHA--256-blue)
 ![Deduplication](https://img.shields.io/badge/block--dedup-yes-green)
+![Deduplication](https://img.shields.io/badge/status-WIP-green)
 
-**A pure-JS, content-addressed, copy-on-write (WIP) virtual filesystem for the browser — featuring deduplication, filesystem universes, events, and optional asynchronous sync.**
+**A pure-JS, content-addressed, copy-on-write virtual filesystem for the browser, featuring: deduplication, filesystem universes, events, and optional asynchronous sync.**
 
 jFS3 is a modern, lightweight filesystem engine designed for browser environments and offline-first applications.  
 It stores file data as immutable, hashed blocks in IndexedDB, maintains inodes in LocalStorage, and provides advanced features such as Copy-on-Write, snapshots, universes, block-level deduplication, and an event-driven architecture — all in ~10 kB minified and with zero dependencies.
