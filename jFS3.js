@@ -520,7 +520,7 @@ class jFS3
           }
       }
   }
-  constructor(bs=512, sync=true)
+  constructor(bs=4096, sync=false)
   {
     this._bs = bs;
     const self = this;

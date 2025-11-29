@@ -78,7 +78,7 @@ import jFS3 from "./jFS3.js";
 ## 🚀 Quick Start
 
 ```js
-const fs = new jFS3(8192, false); // (default_blocksize: 8196, sync: false)
+const fs = new jFS3(4096); // Used blocksize: 4096 bytes
 
 // Create directories
 fs.mkdir("/docs");
