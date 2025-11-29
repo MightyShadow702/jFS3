@@ -121,6 +121,10 @@ fs.transfer("@u1", "/");
 ```
 
 ---
+## 📗 Examples
+- [SimpleExplorer](Example/SimpleExplorer.html) ([Demo](https://rawcdn.githack.com/MS702/jFS3/refs/heads/main/Example/SimpleExplorer.html))
+
+---
 
 ## 🧱 Architecture
 
@@ -193,9 +197,9 @@ Uses base64-encoded JSON frames for block + inode replication.
 
 ## 📌 Use Cases
 
-- [Client-side File-Explorer](Example/SimpleExplorer.html) ([Demo](https://rawcdn.githack.com/MS702/jFS3/refs/heads/main/Example/SimpleExplorer.html))
+- [Client-side File-Explorer](Example/SimpleExplorer.html)
 - Offline-first editors (text, code, binary)
-- WebXDC / DeltaChat apps
+- [WebXDC](https://webxdc.org) / [DeltaChat](https://delta.chat/) apps
 - P2P sync
 - Versioning + snapshots
 - Git-like branching in-browser
