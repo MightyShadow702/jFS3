@@ -175,5 +175,3 @@ Uses base64-encoded JSON frames for block + inode replication.
 - P2P sync
 - Versioning + snapshots
 - Git-like branching in-browser
-
----
