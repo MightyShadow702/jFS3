@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [v1.0.2]
+## [v1.0.3] - 2025-11-30
+### Added
+- Add: listUniverses, createUniverse and deleteUniverse functions
+- Add: events create-universe and delete-universe
+### Changes
+- Change: deleteTransfer to deleteTree to clarify its functions
+- Change: events create-transfer and delete-transfer to create-tree and delete-tree
+### Fixes
+- Fixes: transfer now just can create new trees if at least the parent exists inside of the filesystem.
+### Breaks
+- Break: .deleteTransfer now replaced with .deleteTree
+- Break: transfer events now are called tree events instead
+
+## [v1.0.2] - 2025-11-30
 ### Added
 - Add: .onready function to init when FS is ready
 ### Changes

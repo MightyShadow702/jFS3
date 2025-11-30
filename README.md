@@ -32,8 +32,8 @@ Universes are isolated copies of filesystem subtrees.
 
 Example:
 ```js
-fs.transfer("/", "@backup"); // create snapshot
-fs.transfer("@backup", "/"); // restore snapshot
+fs.cloneUniverse("/", "@backup"); // create snapshot
+fs.cloneUniverse("@backup", "/"); // restore snapshot
 ```
 
 ### 🔹 Full event system
@@ -51,8 +51,10 @@ Includes events:
 - delete-inode
 - move
 - copy
-- create-transfer
-- delete-transfer
+- create-tree
+- delete-tree
+- create-universe
+- delete-universe
 
 ### 🔹 (Optional) async sync protocol
 Includes send/receive frame encoding, block transfer, metadata merge, tombstones, and timestamp-based conflict resolution.
@@ -114,13 +116,13 @@ fs.onready(async () => {
   console.log(await file.text());
 
   // Create a snapshot
-  fs.transfer("/", "@u1");
+  fs.cloneUniverse("/", "@u1");
 
   // Delete file
   fs.rm("/docs/hello.txt");
 
   // Restore snapshot to revive deleted file
-  fs.transfer("@u1", "/");
+  fs.cloneUniverse("@u1", "/");
 
 });
 ```
@@ -151,7 +153,7 @@ jFS3 is built around the concept of filesystem universes.
 
 The root universe "/" represents the active filesystem, but additional universes (e.g. "@backup", "@u1") can be created for snapshots, branching, and isolated changes.
 
-Any path can be transferred into a subpath of another or even the same universe, producing an identical copy of that subtree.
+Also any path can be transferred into a subpath of another or even the same universe, producing an identical copy of that subtree.
 
 ### Sync Protocol
 Uses base64-encoded JSON frames for block + inode replication.
@@ -187,8 +189,11 @@ Uses base64-encoded JSON frames for block + inode replication.
 - `fs.metainfo(path)`
 
 ### Universes
-- `fs.transfer(src, dest)`
-- `fs.deleteTransfer(path)`
+- `fs.listUniverses()`
+- `fs.cloneUniverse(src, name)`
+- `fs.deleteUniverse(name)`
+- `fs.transfer(srcTree, destTree)`
+- `fs.deleteTree(path)`
 
 ### Events
 - `fs.on(event, handler)`
