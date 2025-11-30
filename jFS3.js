@@ -504,6 +504,38 @@ class jFS3
     }
     return universes;
   }
+  async quota(path=null)
+  {
+    var logicalSize = 0;
+    this._foreach(this.inodes.keys(),
+      (ident) => path ? ident.startsWith(path === "/" ? path : path+"/") : true,
+    (ident) => {
+      logicalSize += this.inodes[ident].size || 0;
+    });
+    const blocks = new Set();
+    for (const node of this.inodes.values())
+    {
+      if (node.blocks)
+      {
+        for (const block of node.blocks)
+        {
+          if(!blocks.has(block)) blocks.add(block);
+        }
+      }
+    }
+    var refs = (await this.backend.keys("blocks")).length;
+    const unique = blocks.size;
+    const dedupRatio = unique > 0 ? refs/unique : 0;
+    const usage = refs > 0 ? unique/refs : 0;
+    return {
+      logicalSize,
+      estimatedPhysicalSize: logicalSize*usage,
+      referencedBlocks: refs,
+      uniqueBlocks: unique,
+      dedupRatio: dedupRatio,
+      usage: usage
+    }
+  }
   on(event, handler)
   {
     if (typeof handler !== "function") console.error("jFS event-error: incompatible handler");
@@ -658,7 +690,7 @@ class jFS3
         if (!this.isdir("/")) this.inodes["/"] = {type: "dir", ctime: 0, mtime: 0};
         this._cwd = "/";
         this.deduplicate();
-        setInterval(() => this.deduplicate(), 30000);
+        setInterval(() => this.deduplicate(), 60000);
         fs.emit("ready");
     });
   }
