@@ -3,6 +3,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.0.2]
 ### Added
 - Add: .onready function to init when FS is ready
 ### Changes
