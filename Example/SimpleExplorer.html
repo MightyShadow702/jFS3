@@ -108,7 +108,8 @@
       fs.mkdir(prompt("New folder") || "new folder");
     }
     // Register events to update the file list on FS changes.
-    for (const event of ["change-path", "create-file", "change-file", "delete-file", "create-dir", "delete-dir"])
+    for (const event of ["change-path", "create-file", "change-file", "delete-file",
+    "create-dir", "delete-dir"])
     {
       // if event gets triggered updates the file list.
       fs.on(event, (path) => updateList());
