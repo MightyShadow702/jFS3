@@ -512,27 +512,22 @@ class jFS3
     var logicalSize = 0;
     this._foreach(this.inodes.keys(),
       (ident) => path ? ident.startsWith(path === "/" ? path : path+"/") : true,
-    (ident) => {
-      logicalSize += this.inodes[ident].size || 0;
-    });
+      (ident) => logicalSize += this.inodes[ident].size || 0
+    );
     var refs = 0;
-    for (const node of this.inodes.values())
-    {
-      if (node.blocks)
-      {
-        refs += node.blocks.length;
-      }
-    }
+    this._foreach(this.inodes.values(),
+      (node) => node.blocks,
+      (node) => refs += node.blocks.length
+    );
     const unique = (await this.backend.keys("blocks")).length;
-    const dedupRatio = unique > 0 ? refs/unique : 0;
     const usage = refs > 0 ? unique/refs : 0;
     return {
       logicalSize,
       estimatedPhysicalSize: Math.round(logicalSize*usage),
       referencedBlocks: refs,
       uniqueBlocks: unique,
-      dedupRatio: dedupRatio,
-      usageRatio: usage
+      usageRatio: usage,
+      dedupRatio: usage > 0 ? 1/usage : 0
     }
   }
   on(event, handler)
