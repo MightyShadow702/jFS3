@@ -1,6 +1,6 @@
 # jFS3
 ![License: LGPL v3](https://img.shields.io/badge/License-LGPLv3-blue.svg)
-![Size](https://img.shields.io/badge/size-~10kB-brightgreen)
+![Size](https://img.shields.io/badge/size-11kB-brightgreen)
 ![Language: JavaScript](https://img.shields.io/badge/language-JavaScript-yellow)
 ![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-browser-blue)
