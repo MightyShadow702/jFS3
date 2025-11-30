@@ -532,7 +532,7 @@ class jFS3
       referencedBlocks: refs,
       uniqueBlocks: unique,
       dedupRatio: dedupRatio,
-      usage: usage
+      usageRatio: usage
     }
   }
   on(event, handler)
