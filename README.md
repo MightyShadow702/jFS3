@@ -12,7 +12,9 @@
 **A pure-JS, content-addressed, copy-on-write virtual filesystem for the browser, featuring: deduplication, filesystem universes (snapshots), events, and optional asynchronous sync.**
 
 jFS3 is a modern, lightweight filesystem engine designed for browser environments and offline-first applications.  
-It stores file data as immutable, hashed blocks in IndexedDB, maintains inodes in LocalStorage, and provides advanced features such as Copy-on-Write, snapshots, universes, block-level deduplication, and an event-driven architecture — all in ~10 kB minified and with zero dependencies.
+It stores file data as immutable, hashed blocks in IndexedDB, keeps inode structures in RAM while synchronizing them back to IndexedDB, and provides advanced features such as copy-on-write, universes (snapshots), block-level deduplication, and an event-driven architecture.
+
+All in ~10 kB minified and with zero dependencies.
 
 ---
 
