@@ -125,7 +125,7 @@
     });
 
     //init UI wenn FS is ready
-    fs.onload(() => {
+    fs.onready(() => {
       updateList();
       document.getElementById("path").value = fs.getcwd();
     });

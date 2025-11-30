@@ -553,7 +553,7 @@ class jFS3
       }
     }
   }
-  onload(fn)
+  onready(fn)
   {
     if (this._ready) fn();
     else

@@ -100,24 +100,29 @@ import jFS3 from "./jFS3.js";
 ```js
 const fs = new jFS3(4096); // Use blocksize: 4096 bytes
 
-// Create directories
-fs.mkdir("/docs");
+// Run when Filesystem is ready
+fs.onready(async () => {
 
-// Write
-await fs.writeFile("/docs/hello.txt", "Hello World");
+  // Create directories
+  fs.mkdir("/docs");
 
-// Read
-const file = await fs.readFile("/docs/hello.txt");
-console.log(await file.text());
+  // Write
+  await fs.writeFile("/docs/hello.txt", "Hello World");
 
-// Create a snapshot
-fs.transfer("/", "@u1");
+  // Read
+  const file = await fs.readFile("/docs/hello.txt");
+  console.log(await file.text());
 
-// Delete file
-fs.rm("/docs/hello.txt");
+  // Create a snapshot
+  fs.transfer("/", "@u1");
 
-// Restore
-fs.transfer("@u1", "/");
+  // Delete file
+  fs.rm("/docs/hello.txt");
+
+  // Restore snapshot to revive deleted file
+  fs.transfer("@u1", "/");
+
+}
 ```
 
 ---
@@ -188,6 +193,7 @@ Uses base64-encoded JSON frames for block + inode replication.
 ### Events
 - `fs.on(event, handler)`
 - `fs.off(event, handler)`
+- `fs.onready(func)`
 
 ### Sync (sync:true)
 - `fs.addTX(sendFunction, interval, frameSize)`
