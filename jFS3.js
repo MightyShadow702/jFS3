@@ -155,7 +155,7 @@ class jFS3
   }
   abspath(path)
   {
-    if (!path.startsWith("/")) path = this.join(this._cwd, path);
+    if (!path || !path.startsWith("/")) path = this.join(this._cwd, path);
     return this.normalize(path);
   }
   split(path)
@@ -305,7 +305,7 @@ class jFS3
         },
         (path, dest) => {
           this.transfer(path, dest);
-          this.deleteTransfer(path);
+          this.deleteTree(path);
         }
       );
       if ("move" in this.eventListeners) this.emit("move", src, dest);
@@ -332,7 +332,7 @@ class jFS3
     );
     if ("copy" in this.eventListeners) this.emit("copy", src, dest);
   }
-  async writeFile(path, content, bs=this._bs)
+  async writeFile(path, content="", bs=this._bs)
   {
     path = this.abspath(path);
     if (this.isdir(path)) throw new jFSError("EISDIR", "Not a file: " + path);
@@ -440,34 +440,69 @@ class jFS3
     delete entry.blocks;
     return entry;
   }
-  deleteTransfer(path)
+  deleteTree(path)
   {
-    this._foreach([...this.inodes.keys()], (ident) => (ident === path || ident.startsWith(path === "/" ? "/" : path+"/")),
-     (ident) => {
-       delete this.inodes[ident];
-      }
-    );
-    if ("delete-transfer" in this.eventListeners) this.emit("delete-transfer", path);
+    if (path in this.inodes)
+    {
+      this._foreach([...this.inodes.keys()], (ident) => (ident === path || ident.startsWith(path === "/" ? "/" : path+"/")),
+       (ident) => {
+         delete this.inodes[ident];
+        }
+      );
+      if ("delete-tree" in this.eventListeners) this.emit("delete-tree", path);
+      return true;
+    }
+  }
+  cloneUniverse(src, dest)
+  {
+    if (this.listUniverses().has(src))
+    {
+      return this.transfer("/", dest.startsWith("@") ? dest : "@" + dest);
+    }
+    if ("create-universe" in this.eventListeners) this.emit("create-universe", dest);
+  }
+  deleteUniverse(name)
+  {
+    const res = this.deleteTree(name === "/" ? name : "@"+name);
+    if (res && "delete-universe" in this.eventListeners) this.emit("delete-universe", dest);
+    return res;
   }
   transfer(src, dest)
   {
-    const garbage = new Set();
-    if (!(src in this.inodes)) throw new jFSError("ENOENT", "Source universe not found");
-    this._foreach([...this.inodes.keys()], (ident) => (ident === dest || ident.startsWith(dest === "/" ? "/" : dest+"/")),
-      (ident) => garbage.add(ident)
-    );
-    this._foreach(Object.entries({...this.inodes}), (ident, _) => (ident === src || ident.startsWith(src === "/" ? "/" : src+"/")),
-      (ident, node) => {
-        const new_ident = this.join(dest, ident.slice(src.length));
-        this.inodes[new_ident] = structuredClone(node);
-        garbage.delete(new_ident);
-      }
-    );
-    for (const node of garbage)
+    if (src in this.inodes && dest.includes("/") ? this.split(dest)[0] in this.inodes : dest.startsWith("@"))
     {
-      delete this.inodes[node];
+      const garbage = new Set();
+      if (!(src in this.inodes)) throw new jFSError("ENOENT", "Source universe not found");
+      this._foreach([...this.inodes.keys()], (ident) => (ident === dest || ident.startsWith(dest === "/" ? "/" : dest+"/")),
+        (ident) => garbage.add(ident)
+      );
+      this._foreach(Object.entries({...this.inodes}), (ident, _) => (ident === src || ident.startsWith(src === "/" ? "/" : src+"/")),
+        (ident, node) => {
+          const new_ident = this.join(dest, ident.slice(src.length));
+          this.inodes[new_ident] = structuredClone(node);
+          garbage.delete(new_ident);
+        }
+      );
+      for (const node of garbage)
+      {
+        delete this.inodes[node];
+      }
+      if ("create-tree" in this.eventListeners) this.emit("create-tree", src, dest);
+      return true;
     }
-    if ("create-transfer" in this.eventListeners) this.emit("create-transfer", src, dest);
+  }
+  listUniverses()
+  {
+    const universes = new Set();
+    for (const ident of this.inodes.keys())
+    {
+      const parent = ident.startsWith("/") ? this.split(ident)[0] : ident;
+      if (parent === "/" || parent.startsWith("@") && !parent.includes("/"))
+      {
+        universes.add(parent);
+      }
+    }
+    return universes;
   }
   on(event, handler)
   {
