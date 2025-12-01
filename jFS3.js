@@ -300,8 +300,8 @@ class jFS3
   {
       this._path_manipulator(src, dest,
         (path, dest) => {
-          this.inodes[dest] = this.inodes[dest];
-          delete this.inodes[dest];
+          this.inodes[dest] = this.inodes[path];
+          delete this.inodes[path];
         },
         (path, dest) => {
           this.transfer(path, dest);
