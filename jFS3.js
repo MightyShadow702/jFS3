@@ -283,8 +283,8 @@ class jFS3
     garbage = [...garbage];
     while (garbage.length > 0)
     {
-      await this.backend.delete("blocks", ...garbage.slice(0, 1000));
-      garbage = garbage.slice(1000);
+      await this.backend.delete("blocks", ...garbage.slice(0, 2000));
+      garbage = garbage.slice(2000);
     }
   }
   _path_manipulator(src, dest, onfile, ondir)
@@ -421,13 +421,11 @@ class jFS3
       throw new jFSError("EIO", "Missing block: " + block);
     }
     const name = this.split(path)[1];
-    const blocks = [];
-    for await (const block of this.backend.get("blocks", ...file.blocks))
-      blocks.push(block);
-    return new File(blocks, name, {
-        type: file.mime,
-        lastModified: file.mdate
-      });
+    return new File(
+      await Array.fromAsync(this.backend.get("blocks", ...file.blocks)),
+      name,
+      {type: file.mime, lastModified: file.mdate}
+    );
   }
   metainfo(path)
   {
