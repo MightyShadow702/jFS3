@@ -424,16 +424,13 @@ class jFS3
       throw new jFSError("EIO", "Missing block: " + block);
     }
     const name = this.split(path)[1];
-    return new File(
-      await Array.fromAsync(
-          this.backend.get("blocks", ...file.blocks)
-      ),
-      name,
-      {
+    const blocks = [];
+    for await (const block of this.backed.get("blocks", ...file.blocks))
+      blocks.push(block);
+    return new File(blocks, name, {
         type: file.mime,
         lastModified: file.mdate
-      }
-    );
+      });
   }
   metainfo(path)
   {
