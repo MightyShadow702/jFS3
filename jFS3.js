@@ -85,11 +85,8 @@ class IDB
     const os = tx.objectStore(src);
     for (const key of keys)
     {
-      if (await this._prom(os.getKey(key)) !== undefined)
-      {
-        await this._prom(os.delete(key));
-        this._keys[src].delete(key);
-      }
+      await this._prom(os.delete(key));
+      this._keys[src].delete(key);
     }
   }
   has(src, key)
